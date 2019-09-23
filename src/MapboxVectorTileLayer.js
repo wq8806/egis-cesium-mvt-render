@@ -7,7 +7,7 @@ const Cesium = require('cesium/Cesium');
 const Rbush = require('rbush');
 const mvtParser = new MVT();
 
-
+window.canvasCache = {};
 class Declutter {
 
     constructor() {
@@ -79,20 +79,28 @@ class MapboxVectorTileLayer {
 
     }
 
-
     drawContext(canvas, features, x, y, level, provider) {
         const rbush = Rbush(9, undefined); // declutter.getRbush();
         const vectorContext = canvas.getContext('2d');
         const extent = [0, 0, 4096, 4096];
+        //避让方法
         let replayGroup = new CanvasReplayGroup(0, extent, 8, window.devicePixelRatio, true, rbush, 100);
-        const squaredTolerance = getSquaredTolerance(8,
-            window.devicePixelRatio);
+        //不避让方法
+        // let replayGroup = new CanvasReplayGroup(0,extent,8,window.devicePixelRatio,true,null,100);
+        const squaredTolerance = getSquaredTolerance(8, window.devicePixelRatio);
 
+        if(x === 6 && y===1 && level ===2){
+            // console.log(features);
+        }
         for (let i = 0; i < features.length; i++) {
             const feature = features[i];
             const styles = this.funStyle(features[i], level);
             if (!!styles && !!styles.length) {
                 for (let j = 0; j < styles.length; j++) {
+                    /*if(!!styles[j].getText() && styles[j].getText().getText() === '呼和浩特市'){
+                        console.log(x+"---"+y+"---"+level);
+                        console.log(feature);
+                    }*/
                     renderFeature(replayGroup, feature, styles[j], squaredTolerance);
                 }
             }
@@ -164,6 +172,20 @@ class MapboxVectorTileLayer {
                     try {
                         provider.trimTile();
                         provider.markTileRendered(cc.canvas);
+                        try {
+                            var id1 = (x-1)+"-"+y+"-"+z;
+                            if(!!window.canvasCache[id1]){
+                                var canvas25_4_4 = window.canvasCache[id1];
+                                var needToDraw = canvas25_4_4.needToDraw;
+                                var ctx = cc.canvas.getContext("2d");
+                                needToDraw.forEach(item =>{
+                                    ctx.drawImage(item.image, item.originX, item.originY, item.w, item.h, item.x, item.y, item.width, item.height);
+                                })
+                            }
+                        }catch (e) {
+                            console.error(e);
+                        }
+
                         that.removeCanvas(id);
 
                         return onFulfilled(cc.canvas);
@@ -186,6 +208,12 @@ class MapboxVectorTileLayer {
                     });
                     if (count == indexes.length) {
                         if (features.length > 0) {
+                            canvas.xMvt = x;
+                            canvas.yMvt = y;
+                            canvas.zMvt = z;
+                            canvas.needToDraw = [];
+                            var id = x+"-"+ y+"-"+z;
+                            window.canvasCache[id] = canvas;
                             that.drawContext(canvas, features, x, y, level, provider);
                         }
                         cc.already = true;

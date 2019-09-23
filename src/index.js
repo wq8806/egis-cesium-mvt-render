@@ -81,8 +81,11 @@ fetch("./sprite.json").then(function (data) {
                 });
 
 
-                viewer.scene.globe.baseColor = new Cesium.Color(1.0, 1.0, 1.0, 1.0);  //60,172,231
-                var tilecoord = new Cesium.TileCoordinatesImageryProvider();
+                viewer.scene.globe.baseColor = Cesium.Color.fromBytes(171, 198, 239, 255); //new Cesium.Color(1.0, 1.0, 1.0, 1.0);  //60,172,231
+                var tilecoord = new Cesium.TileCoordinatesImageryProvider({
+                    tileWidth:512,
+                    tileHeight:512
+                });
                 // viewer.scene.imageryLayers.addImageryProvider(veclayer2);
                 // viewer.scene.imageryLayers.addImageryProvider(veclayer3);
                 // viewer.scene.imageryLayers.addImageryProvider(veclayer4);
@@ -99,11 +102,12 @@ fetch("./sprite.json").then(function (data) {
                     viewer.scene.imageryLayers.addImageryProvider(layer.getProvider());
                 }
 
-                viewer.scene.imageryLayers.addImageryProvider(tilecoord);
+                // viewer.scene.imageryLayers.addImageryProvider(tilecoord);
 
                 viewer.scene.globe.maximumScreenSpaceError = 1.5;
                 viewer.resolutionScale = window.devicePixelRatio;
                 viewer.scene.postProcessStages.fxaa.enabled = false;
+                viewer.scene.highDynamicRange = false;
             })
         })
     })
