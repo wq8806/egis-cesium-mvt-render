@@ -45,20 +45,21 @@ class Declutter {
 
 class MapboxVectorTileLayer {
 
-    constructor(name, url, funStyle) {
+    constructor(url, indexes,funStyle) {
         this.provider = new Cesium.MapboxVectorTileProvider({
             url: url,
             projection: "4326",
             owner: this
         });
         this.url = url;
-        this.name = name;
+        // this.name = name;
+        this.indexes = indexes;
         this.funStyle = funStyle;
         this.canvases = {};
     }
 
     beginFrame(frameState) {
-        frameState[this.name] = {
+        /*frameState[this.name] = {
             tileCount: 0,
             declutter: new Declutter(),
             getDeclutter: function () {
@@ -72,7 +73,7 @@ class MapboxVectorTileLayer {
             enouthTile(size) {
                 return this.tileCount >= size;
             }
-        }
+        }*/
     }
 
     endFrame(frameState) {
@@ -198,7 +199,7 @@ class MapboxVectorTileLayer {
                 const canvas = cc.canvas;
                 cc.count++;
 
-                const indexes = ["11", "13", "16", "15", "12", "14", "21", "22"];
+                // const indexes = ["11"];
                 var features = [];
                 var count = 0;
                 var done = function (items) {
@@ -206,7 +207,7 @@ class MapboxVectorTileLayer {
                     items.forEach(a => {
                         features.push(a);
                     });
-                    if (count == indexes.length) {
+                    if (count == that.indexes.length) {
                         if (features.length > 0) {
                             canvas.xMvt = x;
                             canvas.yMvt = y;
@@ -222,8 +223,8 @@ class MapboxVectorTileLayer {
 
                 const url = that.url;
 
-                for (let i = 0; i < indexes.length; ++i) {
-                    const index = indexes[i];
+                for (let i = 0; i < that.indexes.length; ++i) {
+                    const index = that.indexes[i];
                     const pbfUrl = url.replace('{x}', x).replace('{y}', y).replace('{z}', level).replace('{index}', index);
                     that.fetchFeatures(pbfUrl, done);
                 }

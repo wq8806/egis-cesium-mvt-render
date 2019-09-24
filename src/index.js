@@ -16,6 +16,7 @@ for (var zoom = 0; zoom < 18; zoom++) {
 
 
 const sources = ['china_1-10', "lrdl", "other", "lfcp", "subp", "poi", "省市县乡注记", "全国省市县乡"];
+const indexes = ["11", "13", "16", "15", "12", "14", "21", "22"];
 
 fetch("./sprite.json").then(function (data) {
     data.json().then(function (sprites) {
@@ -26,54 +27,7 @@ fetch("./sprite.json").then(function (data) {
 
                 const funStyle11 = stylefunction(glStyle, sources, res1, sprites, "http://localhost:8080/map/api/v1/sprites/1/sprite.png");
                 var url11 = "http://localhost:8080/map/api/v1/tiles/{index}/{z}/{x}/{y}.pbf";
-                const layer11 = new MapboxVectorTileLayer("11", url11, funStyle11);
-
-                // var veclayer1 = new Cesium.MapboxVectorTileProvider({
-                //     url: url,
-                //     projection: "4326",
-                //     glStyle: glStyle,
-                //     resolutions: res1,
-                //     tileRequest: requestTile,
-                //     onBeginFrame: onBeginFrame,
-                //     onEndFrame: onEndFrame
-                //     // styleFun: Cesium.olms.stylefunction(glStyle, 'china_1-10', res1, sprites, "http://localhost:8080/map/api/v1/sprites/1/sprite.png")   //'china_1-10'
-                // });
-                //
-                // var url2 = "http://localhost:8080/map/api/v1/tiles/13/{z}/{x}/{y}.pbf";
-                // var veclayer2 = new Cesium.MapboxVectorTileProvider({
-                //     url: url2,
-                //     projection: "4326",
-                //     glStyle: glStyle,
-                //     resolutions: res1,
-                //     tileRequest: requestTile,
-                //     onBeginFrame: onBeginFrame,
-                //     onEndFrame: onEndFrame
-                //     // styleFun: Cesium.olms.stylefunction(glStyle, 'china_1-10', res1, sprites, "http://localhost:8080/map/api/v1/sprites/1/sprite.png")   //'china_1-10'
-                // });
-                //
-                // var veclayer3 = new Cesium.MapboxVectorTileProvider({
-                //     url: "http://localhost:8080/map/api/v1/tiles/14/{z}/{x}/{y}.pbf",
-                //     projection: "4326",
-                //     glStyle: glStyle,
-                //     resolutions: res1,
-                //     tileRequest: requestTile,
-                //     onBeginFrame: onBeginFrame,
-                //     onEndFrame: onEndFrame
-                //     // styleFun: Cesium.olms.stylefunction(glStyle, 'china_1-10', res1, sprites, "http://localhost:8080/map/api/v1/sprites/1/sprite.png")   //'china_1-10'
-                // });
-                //
-                //
-                // var veclayer4 = new Cesium.MapboxVectorTileProvider({
-                //     url: "http://localhost:8080/map/api/v1/tiles/16/{z}/{x}/{y}.pbf",
-                //     projection: "4326",
-                //     glStyle: glStyle,
-                //     resolutions: res1,
-                //     tileRequest: requestTile,
-                //     onBeginFrame: onBeginFrame,
-                //     onEndFrame: onEndFrame
-                //     // styleFun: Cesium.olms.stylefunction(glStyle, 'china_1-10', res1, sprites, "http://localhost:8080/map/api/v1/sprites/1/sprite.png")   //'china_1-10'
-                // });
-
+                const layer11 = new MapboxVectorTileLayer(url11,indexes, funStyle11);
 
                 var viewer = new Cesium.Viewer('cesiumContainer', {
                     imageryProvider: layer11.getProvider(),
@@ -86,11 +40,8 @@ fetch("./sprite.json").then(function (data) {
                     tileWidth:512,
                     tileHeight:512
                 });
-                // viewer.scene.imageryLayers.addImageryProvider(veclayer2);
-                // viewer.scene.imageryLayers.addImageryProvider(veclayer3);
-                // viewer.scene.imageryLayers.addImageryProvider(veclayer4);
 
-                const names = ['china_1-10', "lrdl", "other", "lfcp", "subp", "poi", "省市县乡注记", "全国省市县乡"];
+               /* const names = ['china_1-10', "lrdl", "other", "lfcp", "subp", "poi", "省市县乡注记", "全国省市县乡"];
                 const ids = ["11", "13", "14", "16", "15", "12", "21", "22"];
                 for (let i = 1; i < 0; ++i) {
                     const name = names[i];
@@ -100,9 +51,9 @@ fetch("./sprite.json").then(function (data) {
                     const url = "http://localhost:8080/map/api/v1/tiles/" + id + "/{z}/{x}/{y}.pbf";
                     const layer = new MapboxVectorTileLayer(id, url, funStyle);
                     viewer.scene.imageryLayers.addImageryProvider(layer.getProvider());
-                }
+                }*/
 
-                // viewer.scene.imageryLayers.addImageryProvider(tilecoord);
+                viewer.scene.imageryLayers.addImageryProvider(tilecoord);
 
                 viewer.scene.globe.maximumScreenSpaceError = 1.5;
                 viewer.resolutionScale = window.devicePixelRatio;
