@@ -115,9 +115,9 @@ class MapboxVectorTileLayer {
         //  provider.trimTile();
         // provider.markTileRendered(canvas);
 
-        canvas.xMvt = x;
+        /*canvas.xMvt = x;
         canvas.yMvt = y;
-        canvas.zMvt = level;
+        canvas.zMvt = level;*/
 
         replayGroup = null;
     }
@@ -134,7 +134,8 @@ class MapboxVectorTileLayer {
                 already: false,
                 count: 0
             };
-
+            canvas.tileQuene = this.provider._tileQueue;
+            canvas.mvtProvider = this.provider;
             return this.canvases[id];
         }
     }
@@ -175,14 +176,22 @@ class MapboxVectorTileLayer {
                         provider.markTileRendered(cc.canvas);
                         try {
                             var id1 = (x-1)+"-"+y+"-"+z;
-                            if(!!window.canvasCache[id1]){
+                            var ss = that.provider._tileQueue.findTile(x-1,y,z,that.provider._tileQueue);
+                            if(!!ss){
+                                var needToDraw = ss.needToDraw;
+                                var ctx = cc.canvas.getContext("2d");
+                                needToDraw.forEach(item =>{
+                                    ctx.drawImage(item.image, item.originX, item.originY, item.w, item.h, item.x, item.y, item.width, item.height);
+                                })
+                            }
+                            /*if(!!window.canvasCache[id1]){
                                 var canvas25_4_4 = window.canvasCache[id1];
                                 var needToDraw = canvas25_4_4.needToDraw;
                                 var ctx = cc.canvas.getContext("2d");
                                 needToDraw.forEach(item =>{
                                     ctx.drawImage(item.image, item.originX, item.originY, item.w, item.h, item.x, item.y, item.width, item.height);
                                 })
-                            }
+                            }*/
                         }catch (e) {
                             console.error(e);
                         }
