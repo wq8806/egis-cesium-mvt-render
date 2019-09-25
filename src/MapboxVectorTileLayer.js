@@ -134,7 +134,7 @@ class MapboxVectorTileLayer {
                 already: false,
                 count: 0
             };
-            canvas.tileQuene = this.provider._tileQueue;
+            // canvas.tileQuene = this.provider._tileQueue;
             canvas.mvtProvider = this.provider;
             return this.canvases[id];
         }
@@ -175,10 +175,10 @@ class MapboxVectorTileLayer {
                         provider.trimTile();
                         provider.markTileRendered(cc.canvas);
                         try {
-                            var id1 = (x-1)+"-"+y+"-"+z;
-                            var ss = that.provider._tileQueue.findTile(x-1,y,z,that.provider._tileQueue);
-                            if(!!ss){
-                                var needToDraw = ss.needToDraw;
+                            // var id1 = (x-1)+"-"+y+"-"+z;
+                            var leftTile = that.provider._tileQueue.findTile(x-1,y,z,that.provider._tileQueue);
+                            if(!!leftTile){
+                                var needToDraw = leftTile.needToDraw;
                                 var ctx = cc.canvas.getContext("2d");
                                 needToDraw.forEach(item =>{
                                     ctx.drawImage(item.image, item.originX, item.originY, item.w, item.h, item.x, item.y, item.width, item.height);
@@ -224,8 +224,8 @@ class MapboxVectorTileLayer {
                             canvas.yMvt = y;
                             canvas.zMvt = z;
                             canvas.needToDraw = [];
-                            var id = x+"-"+ y+"-"+z;
-                            window.canvasCache[id] = canvas;
+                            // var id = x+"-"+ y+"-"+z;
+                            // window.canvasCache[id] = canvas;
                             that.drawContext(canvas, features, x, y, level, provider);
                         }
                         cc.already = true;
