@@ -183,6 +183,8 @@ class MapboxVectorTileLayer {
                                 needToDraw.forEach(item =>{
                                     ctx.drawImage(item.image, item.originX, item.originY, item.w, item.h, item.x, item.y, item.width, item.height);
                                 })
+                                // provider._reloadVectorTile(cc.canvas);
+                                provider._reload();
                             }
                             /*if(!!window.canvasCache[id1]){
                                 var canvas25_4_4 = window.canvasCache[id1];
