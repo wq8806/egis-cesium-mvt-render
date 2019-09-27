@@ -169,13 +169,40 @@ class MapboxVectorTileLayer {
             // cc.already = true;
             //  return canvas;
         }).otherwise(function (error) {
+            if(level > 12){
+                if(that._backGroundPolygonFeature !== undefined){
+                    features = [that._backGroundPolygonFeature];
+                    done(features);
+                }else {
+                    var pbfUrl = that.url.replace('{x}', Math.floor(x / 2)).replace('{y}', Math.floor(y / 2)).replace('{z}', 12).replace('{index}', 11);
+                    const resource = Cesium.Resource.createIfNeeded(pbfUrl);
+                    resource.fetchArrayBuffer().then(function (arrayBuffer){
+                        features = mvtParser.readFeatures(arrayBuffer) || [];
+                        features.some(function (item) {
+                            if(item.getType() === 'Polygon'){
+                                that._backGroundPolygonFeature = item;
+                                return true;
+                            }
+                        })
+                        done([that._backGroundPolygonFeature]);
+                    })
+                }
+            }else {
+                done([]);
+            }
+            /*if(!that._backGroundPolygonFeature && level > 12){
+                console.log("sssssssssssssssssssssssssss");
+
+            }
+            if(level === 13 && x === 13488 && y === 2280){
+
+            }
             if(that._backGroundPolygonFeature !== undefined && level > 12){
                 features = [that._backGroundPolygonFeature];
             }else {
                 features = [];
             }
-            done(features);
-            // done([]);
+            done(features);*/
         });
 
     }
