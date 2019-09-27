@@ -27,7 +27,12 @@ fetch("./sprite.json").then(function (data) {
 
                 const funStyle11 = stylefunction(glStyle, sources, res1, sprites, "http://localhost:8080/map/api/v1/sprites/1/sprite.png");
                 var url11 = "http://localhost:8080/map/api/v1/tiles/{index}/{z}/{x}/{y}.pbf";
-                const layer11 = new MapboxVectorTileLayer(url11,indexes, funStyle11);
+                const layer11 = new MapboxVectorTileLayer({
+                    url:url11,
+                    indexes:indexes,
+                    funStyle:funStyle11,
+                    maximumLevel:16
+                });
 
                 var viewer = new Cesium.Viewer('cesiumContainer', {
                     imageryProvider: layer11.getProvider(),

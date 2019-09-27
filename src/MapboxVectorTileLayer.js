@@ -45,16 +45,17 @@ class Declutter {
 
 class MapboxVectorTileLayer {
 
-    constructor(url, indexes,funStyle) {
+    constructor(options) {
         this.provider = new Cesium.MapboxVectorTileProvider({
-            url: url,
+            url: options.url,
             projection: "4326",
+            maximumLevel: options.maximumLevel,
             owner: this
         });
-        this.url = url;
+        this.url = options.url;
         // this.name = name;
-        this.indexes = indexes;
-        this.funStyle = funStyle;
+        this.indexes = options.indexes;
+        this.funStyle = options.funStyle;
         this.canvases = {};
 
         this._backGroundPolygonFeature = undefined;
