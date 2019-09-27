@@ -56,6 +56,8 @@ class MapboxVectorTileLayer {
         this.indexes = indexes;
         this.funStyle = funStyle;
         this.canvases = {};
+
+        this._backGroundPolygonFeature = undefined;
     }
 
     beginFrame(frameState) {
@@ -146,16 +148,33 @@ class MapboxVectorTileLayer {
         }
     }
 
-    fetchFeatures(url, done) {
-        const resource = Cesium.Resource.createIfNeeded(url);
+    fetchFeatures(index, x, y, level, done) {
+        var that = this;
+        var pbfUrl = this.url.replace('{x}', x).replace('{y}', y).replace('{z}', level).replace('{index}', index);
+        const resource = Cesium.Resource.createIfNeeded(pbfUrl);
+        var features ;
         resource.fetchArrayBuffer().then(function (arrayBuffer) {
-            const features = mvtParser.readFeatures(arrayBuffer) || [];
+            features = mvtParser.readFeatures(arrayBuffer) || [];
+            if(index === '11' && level === 12 && !that._backGroundPolygonFeature){
+                features.some(function (item) {
+                    if(item.getType() === 'Polygon'){
+                        that._backGroundPolygonFeature = item;
+                        return true;
+                    }
+                })
+            }
             done(features);
             // that.drawContext(canvas, features, x, y, level, provider);
             // cc.already = true;
             //  return canvas;
         }).otherwise(function (error) {
-            done([]);
+            if(that._backGroundPolygonFeature !== undefined && level > 12){
+                features = [that._backGroundPolygonFeature];
+            }else {
+                features = [];
+            }
+            done(features);
+            // done([]);
         });
 
     }
@@ -237,25 +256,11 @@ class MapboxVectorTileLayer {
 
                 for (let i = 0; i < that.indexes.length; ++i) {
                     const index = that.indexes[i];
-                    const pbfUrl = url.replace('{x}', x).replace('{y}', y).replace('{z}', level).replace('{index}', index);
-                    that.fetchFeatures(pbfUrl, done);
+                    /*const pbfUrl = url.replace('{x}', x).replace('{y}', y).replace('{z}', level).replace('{index}', index);
+                    that.fetchFeatures(pbfUrl, done);*/
+                    that.fetchFeatures(index, x, y, level, done);
                 }
 
-                // let url = that.url;
-                // url = url.replace('{x}', x).replace('{y}', y).replace('{z}', level).replace('{k}');
-                // // const canvas = document.createElement('canvas');
-                // canvas.width = 512;
-                // canvas.height = 512;
-
-                // const resource = Cesium.Resource.createIfNeeded(url);
-                // resource.fetchArrayBuffer().then(function (arrayBuffer) {
-                //     const features = mvtParser.readFeatures(arrayBuffer) || [];
-                //     that.drawContext(canvas, features, x, y, level, provider);
-                //     cc.already = true;
-                //     //  return canvas;
-                // }).otherwise(function (error) {
-                //
-                // });
             }
 
 

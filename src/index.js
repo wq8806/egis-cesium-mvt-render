@@ -15,8 +15,8 @@ for (var zoom = 0; zoom < 18; zoom++) {
 }
 
 
-const sources = ['china_1-10'];
-const indexes = ["11"];
+const sources = ['china_1-10', "lrdl", "other", "lfcp", "subp", "poi", "省市县乡注记", "全国省市县乡"];
+const indexes = ["11", "13", "16", "15", "12", "14", "21", "22"];
 
 fetch("./sprite.json").then(function (data) {
     data.json().then(function (sprites) {
